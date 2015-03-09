@@ -9,23 +9,24 @@
         Height="400"
         mc:Ignorable="d">
     <Grid>
-        <local:DrawingPanelWithGuidelines Margin="20"
-                                          Columns="40"
-                                          Rows="40"
-                                          SnapsToDevicePixels="True">
-            <local:DrawingPanelWithGuidelines.Guideline>
-                <Pen Brush="#20000000" Thickness="1" />
-            </local:DrawingPanelWithGuidelines.Guideline>
-            <local:DrawingPanelWithGuidelines.Axis>
-                <Pen Brush="#80000000" Thickness="1">
-                    <Pen.DashStyle>
-                        <DashStyle Dashes="2, 2" />
-                    </Pen.DashStyle>
-                </Pen>
-            </local:DrawingPanelWithGuidelines.Axis>
-            <local:DrawingPanelWithGuidelines.Diagonal>
-                <Pen Brush="#40000000" Thickness=".8" />
-            </local:DrawingPanelWithGuidelines.Diagonal>
-        </local:DrawingPanelWithGuidelines>
+        <local:DrawingEdge Margin="20">
+            <local:DrawingPanelWithGuidelines Columns="40"
+                                              Rows="40"
+                                              SnapsToDevicePixels="True">
+                <local:DrawingPanelWithGuidelines.Guideline>
+                    <Pen Brush="#20000000" Thickness="1" />
+                </local:DrawingPanelWithGuidelines.Guideline>
+                <local:DrawingPanelWithGuidelines.Axis>
+                    <Pen Brush="#80000000" Thickness="1">
+                        <Pen.DashStyle>
+                            <DashStyle Dashes="2, 2" />
+                        </Pen.DashStyle>
+                    </Pen>
+                </local:DrawingPanelWithGuidelines.Axis>
+                <local:DrawingPanelWithGuidelines.Diagonal>
+                    <Pen Brush="#40000000" Thickness=".8" />
+                </local:DrawingPanelWithGuidelines.Diagonal>
+            </local:DrawingPanelWithGuidelines>
+        </local:DrawingEdge>
     </Grid>
 </Window>

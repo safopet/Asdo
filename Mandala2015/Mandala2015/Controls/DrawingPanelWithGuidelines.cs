@@ -6,11 +6,9 @@ using System.Windows.Media;
 
 namespace Mandala2015.Controls
 {
-    public class DrawingPanelWithGuidelines : Control
+    public class DrawingPanelWithGuidelines : ContentControl
     {
         private static readonly Pen BlackPen = new Pen(Brushes.Black, 1);
-
-        private Edge drawingEdge;
 
         public int Rows
         {
@@ -57,30 +55,6 @@ namespace Mandala2015.Controls
         public static readonly DependencyProperty DiagonalProperty =
             DependencyProperty.Register("Diagonal", typeof(Pen), typeof(DrawingPanelWithGuidelines), new PropertyMetadata(BlackPen, InvokeRendering));
 
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseDown(e);
-            var position = e.GetPosition(this);
-            drawingEdge = new Edge(Math.Round(position.X), Math.Round(position.Y));
-
-            InvalidateVisual();
-        }
-
-        protected override void OnMouseUp(MouseButtonEventArgs e)
-        {
-            base.OnMouseUp(e);
-            drawingEdge = null;
-            InvalidateVisual();
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            var position = e.GetPosition(this);
-            drawingEdge.SetEnd(Math.Round(position.X), Math.Round(position.Y));
-            InvalidateVisual();
-        }
-
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -98,14 +72,11 @@ namespace Mandala2015.Controls
                 width = height = Math.Min(ActualHeight, ActualWidth);
             }
 
+            drawingContext.DrawRectangle(Brushes.Yellow, null, new Rect(0, 0, width, height));
+
             DrawGuidelines(drawingContext, width, height);
 
             DrawAxis(drawingContext, width, height);
-
-            if (drawingEdge != null)
-            {
-                DrawEdge();
-            }
         }
 
         private void DrawAxis(DrawingContext drawingContext, double width, double height)
@@ -176,24 +147,6 @@ namespace Mandala2015.Controls
         {
             var cage = (DrawingPanelWithGuidelines)d;
             cage.InvalidateVisual();
-        }
-
-        private class Edge
-        {
-            public Edge(double x0, double y0)
-            {
-                Start = new Point(x0, y0);
-                End = new Point(x0, y0);
-            }
-
-            public void SetEnd(double x, double y)
-            {
-                End = new Point(x, y);
-            }
-
-            public Point Start { get; private set; }
-
-            public Point End { get; private set; }
         }
     }
 }

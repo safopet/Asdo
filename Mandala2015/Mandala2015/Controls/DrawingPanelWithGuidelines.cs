@@ -6,10 +6,9 @@ using System.Windows.Media;
 
 namespace Mandala2015.Controls
 {
-    public class DrawingPanelWithGuidelines : Control
+    public class DrawingPanelWithGuidelines : ContentControl
     {
         private static readonly Pen BlackPen = new Pen(Brushes.Black, 1);
-
 
         public int Rows
         {
@@ -72,6 +71,8 @@ namespace Mandala2015.Controls
             {
                 width = height = Math.Min(ActualHeight, ActualWidth);
             }
+
+            drawingContext.DrawRectangle(Brushes.Yellow, null, new Rect(0, 0, width, height));
 
             DrawGuidelines(drawingContext, width, height);
 

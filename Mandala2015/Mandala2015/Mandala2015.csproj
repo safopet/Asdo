@@ -63,7 +63,7 @@
     </Compile>
     <Compile Include="Controls\DrawingEdge.cs" />
     <Compile Include="Controls\DrawingPanelWithGuidelines.cs" />
-    <Compile Include="Controls\Edge.cs" />
+    <Compile Include="Controls\PreviewEdge.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

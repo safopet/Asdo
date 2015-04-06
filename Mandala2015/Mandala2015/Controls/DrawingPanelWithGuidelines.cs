@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace Mandala2015.Controls
 {
-    public class DrawingPanelWithGuidelines : ContentControl
+    internal class DrawingPanelWithGuidelines : ContentControl
     {
         private static readonly Pen BlackPen = new Pen(Brushes.Black, 1);
 

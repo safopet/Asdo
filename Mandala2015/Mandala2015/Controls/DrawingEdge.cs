@@ -7,9 +7,12 @@ using System.Windows;
 
 namespace Mandala2015.Controls
 {
-    public class DrawingEdge : Control
+    internal class DrawingEdge : Control
     {
         private static readonly Pen BlackPen = new Pen(Brushes.Black, 1);
+
+		private double _scaleOutX = 1d;
+		private double _scaleOutY = 1d;
 
         public double ScaledWidth
         {
@@ -18,7 +21,7 @@ namespace Mandala2015.Controls
         }
 
         public static readonly DependencyProperty ScaledWidthProperty =
-            DependencyProperty.Register("ScaledWidth", typeof(double), typeof(DrawingEdge), new PropertyMetadata(30d, OnDrawingChanged));
+            DependencyProperty.Register("ScaledWidth", typeof(double), typeof(DrawingEdge), new PropertyMetadata(30d, UpdateScaledSize));
 
         public double ScaledHeight
         {
@@ -27,18 +30,18 @@ namespace Mandala2015.Controls
         }
 
         public static readonly DependencyProperty ScaledHeightProperty =
-            DependencyProperty.Register("ScaledHeight", typeof(double), typeof(DrawingEdge), new PropertyMetadata(30d, OnDrawingChanged));
+            DependencyProperty.Register("ScaledHeight", typeof(double), typeof(DrawingEdge), new PropertyMetadata(30d, UpdateScaledSize));
 
 
-        public IEnumerable<Point> Drawing
+        public IEnumerable<Edge> Drawing
         {
-            get { return (IEnumerable<Point>)GetValue(DrawingProperty); }
+            get { return (IEnumerable<Edge>)GetValue(DrawingProperty); }
             set { SetValue(DrawingProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Drawing.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DrawingProperty =
-            DependencyProperty.Register("Drawing", typeof(IEnumerable<Point>), typeof(DrawingEdge), new PropertyMetadata(null, OnDrawingChanged));
+            DependencyProperty.Register("Drawing", typeof(IEnumerable<Edge>), typeof(DrawingEdge), new PropertyMetadata(null, OnDrawingChanged));
 
         public Pen Pen
         {
@@ -50,34 +53,65 @@ namespace Mandala2015.Controls
         public static readonly DependencyProperty PenProperty =
             DependencyProperty.Register("Pen", typeof(Pen), typeof(DrawingEdge), new PropertyMetadata(BlackPen, OnDrawingChanged));
 
-        protected override void OnRender(DrawingContext drawingContext)
+		protected static void UpdateScaledSize(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var drawingEdge = (DrawingEdge)d;
+			drawingEdge.InvalidateVisual();
+			drawingEdge.UpdateScaleOut();
+		}
+
+		protected static void OnDrawingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var drawingEdge = (DrawingEdge)d;
+			drawingEdge.InvalidateVisual();
+		}
+
+		protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
 
             DrawEdges(drawingContext);
         }
 
-        private Point ScaleOut(Point p)
-        {
-            var width = ActualWidth;
-            var height = ActualHeight;
+		protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+		{
+			base.OnRenderSizeChanged(sizeInfo);
 
-            if (ScaledWidth == ScaledHeight)
-            {
-                width = height = Math.Min(ActualHeight, ActualWidth);
-            }
-            return new Point(Math.Round(p.X * width / ScaledWidth), Math.Round(p.Y * height / ScaledHeight));
-        }
+			UpdateScaleOut();
+		}
 
-        private void DrawEdges(DrawingContext drawingContext)
+		private void UpdateScaleOut()
+		{
+			var width = ActualWidth;
+			var height = ActualHeight;
+
+			if (ScaledWidth == ScaledHeight)
+			{
+				width = height = Math.Min(ActualHeight, ActualWidth);
+			}
+			_scaleOutX = width / ScaledWidth;
+			_scaleOutY = height / ScaledHeight;
+		}
+
+		private Edge ScaleOut(Edge p)
+		{
+			return new Edge(
+				p.Start.X * _scaleOutX,
+				p.Start.Y * _scaleOutY,
+				p.End.X * _scaleOutX,
+				p.End.Y * _scaleOutY);
+		}
+
+		private void DrawEdges(DrawingContext drawingContext)
         {
             if (Drawing != null)
             {
                 var drawing = Drawing.Select(ScaleOut).ToList();
+				var points = drawing.SelectMany(e => new[] { e.Start, e.End }).ToList();
 
-                var guidelines = new GuidelineSet();
+				var guidelines = new GuidelineSet();
 
-                foreach (var point in drawing)
+                foreach (var point in points)
                 {
                     guidelines.GuidelinesX.Add(point.X + Pen.Thickness / 2);
                     guidelines.GuidelinesY.Add(point.Y + Pen.Thickness / 2);
@@ -85,17 +119,14 @@ namespace Mandala2015.Controls
 
                 drawingContext.PushGuidelineSet(guidelines);
 
-                if (drawing.Count % 2 == 0)
-                {
-                    for (var i = 0; i < drawing.Count; i += 2)
-                    {
-                        drawingContext.DrawLine(BlackPen, drawing[i], drawing[i + 1]);
-                    }
-                }
+				foreach (var edge in drawing)
+				{
+					drawingContext.DrawLine(Pen, edge.Start, edge.End);
+				}
 
                 if (Background != null && Background != Brushes.Transparent)
                 {
-                    foreach (var point in drawing)
+                    foreach (var point in points)
                     {
                         drawingContext.DrawEllipse(Background, Pen, point, 3, 3);
                     }
@@ -105,10 +136,5 @@ namespace Mandala2015.Controls
             }
         }
 
-        private static void OnDrawingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var self = (DrawingEdge)d;
-            self.InvalidateVisual();
-        }
     }
 }

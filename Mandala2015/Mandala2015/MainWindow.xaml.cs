@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mandala2015.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -19,9 +20,9 @@ namespace Mandala2015
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    internal partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private IEnumerable<Point> drawing;
+        private IEnumerable<Edge> drawing;
 
         public MainWindow()
         {
@@ -29,23 +30,23 @@ namespace Mandala2015
             DataContext = this;
         }
 
-        public IEnumerable<Point> Preview
+        public Edge? Preview
         {
             set
             {
-                if (value != null)
+                if (value.HasValue)
                 {
-                    var start = value.First();
-
-                    if (LikeRound(start))
+                    if (LikeRound(value.Value.Start))
                     {
-                        var list = value.Select(p => new Point(Math.Round(p.X), Math.Round(p.Y))).ToList();
-                        list.AddRange(value.Select(p => new Point(Math.Round(p.Y), Math.Round(p.X))));
+						var list = new[] {
+							new Edge(Math.Round(value.Value.Start.X), Math.Round(value.Value.Start.Y), Math.Round(value.Value.End.X), Math.Round(value.Value.End.Y)),
+							new Edge(Math.Round(value.Value.Start.Y), Math.Round(value.Value.Start.X), Math.Round(value.Value.End.Y), Math.Round(value.Value.End.X)),
+                            };
                         Drawing = list;
                     }
                     else
                     {
-                        Drawing1 = value;
+                        Drawing1 = new[] { value.Value };
                     }
                 }
                 else
@@ -56,28 +57,12 @@ namespace Mandala2015
             }
         }
 
-        public IEnumerable<Point> Preview1
-        {
-            set
-            {
-                if (value != null)
-                {
-                    var start = value.First();
-                    if (LikeRound(start))
-                    {
-                        return;
-                    }
-                }
-                Drawing1 = value;
-            }
-        }
-
         private bool LikeRound(Point start)
         {
             return Math.Abs(start.X - Math.Round(start.X)) < 0.2 && Math.Abs(start.Y - Math.Round(start.Y)) < 0.2;
         }
 
-        public IEnumerable<Point> Drawing
+        public IEnumerable<Edge> Drawing
         {
             get
             {
@@ -90,7 +75,7 @@ namespace Mandala2015
                 OnPropertyChanged("Drawing");
             }
         }
-        public IEnumerable<Point> Drawing1
+        public IEnumerable<Edge> Drawing1
         {
             get
             {

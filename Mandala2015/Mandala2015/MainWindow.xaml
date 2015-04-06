@@ -7,45 +7,46 @@
         Title="MainWindow"
         Width="600"
         Height="400"
+        x:ClassModifier="internal"
         mc:Ignorable="d">
-    <Grid>
+	<Grid>
 
-        <local:DrawingPanelWithGuidelines Columns="40"
-                                          Rows="40"
-                                          SnapsToDevicePixels="True">
-            <local:DrawingPanelWithGuidelines.Guideline>
-                <Pen Brush="#20000000" Thickness="1" />
-            </local:DrawingPanelWithGuidelines.Guideline>
-            <local:DrawingPanelWithGuidelines.Axis>
-                <Pen Brush="#80000000" Thickness="1">
-                    <Pen.DashStyle>
-                        <DashStyle Dashes="2, 2" />
-                    </Pen.DashStyle>
-                </Pen>
-            </local:DrawingPanelWithGuidelines.Axis>
-            <local:DrawingPanelWithGuidelines.Diagonal>
-                <Pen Brush="#40000000" Thickness=".8" />
-            </local:DrawingPanelWithGuidelines.Diagonal>
-            <Grid>
-                <local:PreviewEdge Preview="{Binding Preview,
-                                                     Mode=OneWayToSource}"
-                                   ScaledHeight="40"
-                                   ScaledWidth="40" />
-                <local:DrawingEdge Drawing="{Binding Drawing,
-                                                     Mode=OneWay}"
-                                   Background="Aquamarine"
-                                   ScaledHeight="40"
-                                   ScaledWidth="40" />
-                <local:DrawingEdge Drawing="{Binding Drawing1,
-                                                     Mode=OneWay}"
-                                   Background="Red"
-                                   ScaledHeight="40"
-                                   ScaledWidth="40">
-                    <local:DrawingEdge.Pen>
-                        <Pen Brush="RosyBrown" Thickness="1"/>
-                    </local:DrawingEdge.Pen>
-                </local:DrawingEdge>
-            </Grid>
-        </local:DrawingPanelWithGuidelines>
-    </Grid>
+		<local:DrawingPanelWithGuidelines Columns="40"
+		                                  Rows="40"
+		                                  SnapsToDevicePixels="True">
+			<local:DrawingPanelWithGuidelines.Guideline>
+				<Pen Brush="#20000000" Thickness="1" />
+			</local:DrawingPanelWithGuidelines.Guideline>
+			<local:DrawingPanelWithGuidelines.Axis>
+				<Pen Brush="#80000000" Thickness="1">
+					<Pen.DashStyle>
+						<DashStyle Dashes="2, 2" />
+					</Pen.DashStyle>
+				</Pen>
+			</local:DrawingPanelWithGuidelines.Axis>
+			<local:DrawingPanelWithGuidelines.Diagonal>
+				<Pen Brush="#40000000" Thickness=".8" />
+			</local:DrawingPanelWithGuidelines.Diagonal>
+			<Grid>
+				<local:PreviewEdge Preview="{Binding Preview,
+				                                     Mode=OneWayToSource}"
+				                   ScaledHeight="40"
+				                   ScaledWidth="40" />
+				<local:DrawingEdge Background="Aquamarine"
+				                   Drawing="{Binding Drawing,
+				                                     Mode=OneWay}"
+				                   ScaledHeight="40"
+				                   ScaledWidth="40" />
+				<local:DrawingEdge Background="Red"
+				                   Drawing="{Binding Drawing1,
+				                                     Mode=OneWay}"
+				                   ScaledHeight="40"
+				                   ScaledWidth="40">
+					<local:DrawingEdge.Pen>
+						<Pen Brush="Coral" Thickness="1" />
+					</local:DrawingEdge.Pen>
+				</local:DrawingEdge>
+			</Grid>
+		</local:DrawingPanelWithGuidelines>
+	</Grid>
 </Window>
